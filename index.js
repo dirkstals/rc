@@ -1,17 +1,17 @@
 var HID = require('node-hid')
 var devices = HID.devices()
 
-console.log(devices);
+// console.log(devices);
 
 var deviceInfo = devices.find( function(d) {
-    var joystick = d.release===336
+    var joystick = d.release===160
     return joystick;
 })
 
 if( deviceInfo ) {
     var device = new HID.HID( deviceInfo.path );
     device.on("data", function(data) {
-        //console.log(data)
+        console.log(data)
         mapping(data)
     })
   }
