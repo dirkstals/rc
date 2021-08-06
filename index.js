@@ -11,7 +11,7 @@ var deviceInfo = devices.find( function(d) {
 if( deviceInfo ) {
     var device = new HID.HID( deviceInfo.path );
     device.on("data", function(data) {
-        console.log(data)
+        console.log(data, data[0], data[1], data[2], data[3], data[4]);
         mapping(data)
     })
   }
