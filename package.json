@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nrf24": "^0.1.7-beta"
+    "nrf24": "^0.1.7-beta",
+    "node-hid": "^2.1.1"
   }
 }
