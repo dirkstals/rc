@@ -2,7 +2,7 @@
 const nrf24 = require("nrf24");
 
 const steeringWheelHIDPath = '/dev/hidraw0';
-const CE_PIN = 22;
+const CE_PIN = 25;
 const CS_PIN = 0;
 
 // const device = new HID.HID(steeringWheelHIDPath);
@@ -12,8 +12,9 @@ rf24.begin();
 
 rf24.config({
   DataRate: nrf24.RF24_250KBPS,
-});
-rf24.useWritePipe("0xE8E8F0F0E1",true); // Select the pipe address to write with Autocks
+  AutoAck: false
+}, true);
+rf24.useWritePipe("0xE8E8F0F0E1"); // Select the pipe address to write with Autocks
 
 const readline = require("readline");
 const rl = readline.createInterface({
