@@ -55,7 +55,7 @@ askInput();
 // })
 
 function sendData(data) {
-    
+    console.log("sending", data);
     // rf24.stopWrite();
     // Async write with callback
     rf24.write(Buffer.from(data));
