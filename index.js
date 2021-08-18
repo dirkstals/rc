@@ -12,7 +12,7 @@ rf24.begin();
 
 rf24.config({
   DataRate: nrf24.RF24_250KBPS,
-  AutoAck: false
+//   AutoAck: false
 }, true);
 rf24.useWritePipe("0xE8E8F0F0E1"); // Select the pipe address to write with Autocks
 
