@@ -1,11 +1,11 @@
-// const HID = require('node-hid');
+const HID = require('node-hid');
 const nrf24 = require("nrf24");
 
 const steeringWheelHIDPath = '/dev/hidraw0';
 const CE_PIN = 25;
 const CS_PIN = 0;
 
-// const device = new HID.HID(steeringWheelHIDPath);
+const device = new HID.HID(steeringWheelHIDPath);
 const rf24 = new nrf24.nRF24(CE_PIN, CS_PIN);
 
 rf24.begin();
@@ -16,51 +16,11 @@ rf24.config({
 }, true);
 rf24.useWritePipe("0xE8E8F0F0E1"); // Select the pipe address to write with Autocks
 
-const readline = require("readline");
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-function askInput() {
-    rl.question("input motorA, motorB? ", function(input) {
-        const data = JSON.parse(`[${input}]`);
-
-        // const motorA = Math.floor(data[0] / (256/3)) - 1;
-        // const motorB = Math.floor(data[1] / 128);
-        let i = 100;
-        
-        while(i <= 0) {
-            sendData([data[0], data[1]]);
-            i--;
-        }
-
-        askInput();
-    });
-}
-
-askInput();
-
-// device.on("data", data => {
-//     // if (data[0] >= 192) {
-//     //     // console.log("Turn Right " + data[0]);
-//     //     sendData(1);
-//     // } else if (data[0] < 64) {
-//     //     // console.log("Turn Left " + data[0]);
-//     // }
-
-//     // if (data[4] > 64) {
-//     //     console.log("GAS " + data[4])
-//     // } 
-
-//     const motorA = Math.floor(data[0] / (256/3)) - 1;
-//     const motorB = Math.floor(data[4] / 128);
-
-//     sendData([motorA, motorB]);
-// })
+device.on("data", data => {
+    sendData([data[0], data[4]]);
+})
 
 function sendData(data) {
-    console.log("sending buffer", Buffer.from(data));
     // rf24.stopWrite();
     // Async write with callback
     rf24.write(Buffer.from(data));
