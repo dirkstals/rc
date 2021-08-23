@@ -26,10 +26,10 @@ function askInput() {
     rl.question("input motorA, motorB? ", function(input) {
         const data = JSON.parse(`[${input}]`);
 
-        const motorA = Math.floor(data[0] / (256/3)) - 1;
-        const motorB = Math.floor(data[1] / 128);
+        // const motorA = Math.floor(data[0] / (256/3)) - 1;
+        // const motorB = Math.floor(data[1] / 128);
 
-        sendData([motorA, motorB]);
+        sendData([data[0], data[1]]);
         askInput();
     });
 }
@@ -55,7 +55,7 @@ askInput();
 // })
 
 function sendData(data) {
-    console.log("sending", data);
+    console.log("sending buffer", Buffer.from(data));
     // rf24.stopWrite();
     // Async write with callback
     rf24.write(Buffer.from(data));
