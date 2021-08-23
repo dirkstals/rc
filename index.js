@@ -28,8 +28,13 @@ function askInput() {
 
         // const motorA = Math.floor(data[0] / (256/3)) - 1;
         // const motorB = Math.floor(data[1] / 128);
+        let i = 100;
+        
+        while(i <= 0) {
+            sendData([data[0], data[1]]);
+            i--;
+        }
 
-        sendData([data[0], data[1]]);
         askInput();
     });
 }
