@@ -1,56 +1,81 @@
-const HID = require('node-hid');
-const nrf24 = require("nrf24");
+// const HID = require('node-hid');
+// const nrf24 = require("nrf24");
+const Gpio = require('onoff').Gpio;
 
-const steeringWheelHIDPath = '/dev/hidraw0';
-const CE_PIN = 25;
-const CS_PIN = 0;
+var LED = new Gpio(15, 'out');
+var blinkInterval = setInterval(blinkLED, 250);
 
-const device = new HID.HID(steeringWheelHIDPath);
-const rf24 = new nrf24.nRF24(CE_PIN, CS_PIN);
-
-rf24.begin();
-
-rf24.config({
-  DataRate: nrf24.RF24_250KBPS,
-//   AutoAck: false
-}, true);
-rf24.useWritePipe("0xE8E8F0F0E1"); // Select the pipe address to write with Autocks
-
-device.on("data", data => {
-    sendData([data[0], data[4]]);
-})
-
-function sendData(data) {
-    // rf24.stopWrite();
-    // Async write with callback
-    rf24.write(Buffer.from(data));
+function blinkLED() { //function to start blinking
+  if (LED.readSync() === 0) { //check the pin state, if the state is 0 (or off)
+    LED.writeSync(1); //set pin state to 1 (turn LED on)
+  } else {
+    LED.writeSync(0); //set pin state to 0 (turn LED off)
+  }
 }
 
-process.stdin.resume();//so the program will not close instantly
+function endBlink() { //function to stop blinking
+  clearInterval(blinkInterval); // Stop blink intervals
+  LED.writeSync(0); // Turn LED off
+  LED.unexport(); // Unexport GPIO to free resources
+}
 
-function exitHandler(options, exitCode) {
+setTimeout(endBlink, 5000); //stop blinking after 5 seconds
 
-    // Finally to assure that object is destroyed
-    // and memory freed destroy must be called.
-    rf24.destroy();
+
+
+
+
+
+// const steeringWheelHIDPath = '/dev/hidraw0';
+// const CE_PIN = 25;
+// const CS_PIN = 0;
+
+// const device = new HID.HID(steeringWheelHIDPath);
+// const rf24 = new nrf24.nRF24(CE_PIN, CS_PIN);
+
+// rf24.begin();
+
+// rf24.config({
+//   DataRate: nrf24.RF24_250KBPS,
+// //   AutoAck: false
+// }, true);
+// rf24.useWritePipe("0xE8E8F0F0E1"); // Select the pipe address to write with Autocks
+
+// device.on("data", data => {
+//     sendData([data[0], data[4]]);
+// })
+
+// function sendData(data) {
+//     // rf24.stopWrite();
+//     // Async write with callback
+//     rf24.write(Buffer.from(data));
+// }
+
+// process.stdin.resume();//so the program will not close instantly
+
+// function exitHandler(options, exitCode) {
+
+//     // Finally to assure that object is destroyed
+//     // and memory freed destroy must be called.
+//     rf24.destroy();
     
-    if (options.cleanup) console.log('clean');
-    if (exitCode || exitCode === 0) console.log(exitCode);
-    if (options.exit) process.exit();
-}
+//     if (options.cleanup) console.log('clean');
+//     if (exitCode || exitCode === 0) console.log(exitCode);
+//     if (options.exit) process.exit();
+// }
 
-//do something when app is closing
-process.on('exit', exitHandler.bind(null,{cleanup:true}));
+// //do something when app is closing
+// process.on('exit', exitHandler.bind(null,{cleanup:true}));
 
-//catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+// //catches ctrl+c event
+// process.on('SIGINT', exitHandler.bind(null, {exit:true}));
 
-// catches "kill pid" (for example: nodemon restart)
-process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
-process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+// // catches "kill pid" (for example: nodemon restart)
+// process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+// process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
 
-//catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+// //catches uncaught exceptions
+// process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 // rf24.destroy(); // After this call the GC will reclaim the object if needed.
 // The object will become unusable at this point.
