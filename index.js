@@ -1,22 +1,22 @@
 const HID = require('node-hid');
 const nrf24 = require("nrf24");
-// const Gpio = require('onoff').Gpio;
+const Gpio = require('onoff').Gpio;
 
-// var LED = new Gpio(15, 'out');
+var LED = new Gpio(15, 'out');
 
-// function blinkLED() { //function to start blinking
-//   if (LED.readSync() === 0) { //check the pin state, if the state is 0 (or off)
-//     LED.writeSync(1); //set pin state to 1 (turn LED on)
-//   } else {
-//     LED.writeSync(0); //set pin state to 0 (turn LED off)
-//   }
-// }
+function blinkLED() { //function to start blinking
+  if (LED.readSync() === 0) { //check the pin state, if the state is 0 (or off)
+    LED.writeSync(1); //set pin state to 1 (turn LED on)
+  } else {
+    LED.writeSync(0); //set pin state to 0 (turn LED off)
+  }
+}
 
-// function endBlink() { //function to stop blinking
-//   clearInterval(blinkInterval); // Stop blink intervals
-//   LED.writeSync(0); // Turn LED off
-//   LED.unexport(); // Unexport GPIO to free resources
-// }
+function endBlink() { //function to stop blinking
+  clearInterval(blinkInterval); // Stop blink intervals
+  LED.writeSync(0); // Turn LED off
+  LED.unexport(); // Unexport GPIO to free resources
+}
 
 
 
@@ -46,14 +46,14 @@ function sendData(data) {
     // rf24.stopWrite();
     // Async write with callback
     rf24.write(Buffer.from(data));
-    // blinkLED();
+    blinkLED();
 }
 
 process.stdin.resume();//so the program will not close instantly
 
 function exitHandler(options, exitCode) {
 
-    // endBlink();
+    endBlink();
     // Finally to assure that object is destroyed
     // and memory freed destroy must be called.
     rf24.destroy();
